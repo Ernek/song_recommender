@@ -1,0 +1,161 @@
+
+number of playlists 1000
+number of tracks 67503
+number of unique tracks 34443
+number of unique albums 19261
+number of unique artists 9754
+number of unique titles 869
+number of playlists with descriptions 20
+number of unique normalized titles 754
+avg playlist length 67.503
+
+top playlist titles
+     25 country
+     13 chill
+      8 workout
+      8 rap
+      8 worship
+      8 oldies
+      8 rock
+      7 christmas
+      6 new
+      6 feels
+      6 party
+      5 relax
+      5 sleep
+      5 pop
+      5 music
+      4 throwbacks
+      4 wedding
+      4 gospel
+      4 love
+      4 lit
+
+top tracks
+     55 One Dance by Drake
+     52 HUMBLE. by Kendrick Lamar
+     50 Broccoli (feat. Lil Yachty) by DRAM
+     46 Closer by The Chainsmokers
+     44 Congratulations by Post Malone
+     42 Don't Let Me Down by The Chainsmokers
+     39 iSpy (feat. Lil Yachty) by KYLE
+     39 Roses by The Chainsmokers
+     39 Jumpman by Drake
+     39 Bounce Back by Big Sean
+     38 Mask Off by Future
+     38 Bad and Boujee (feat. Lil Uzi Vert) by Migos
+     37 XO TOUR Llif3 by Lil Uzi Vert
+     36 Panda by Desiigner
+     36 White Iverson by Post Malone
+     35 goosebumps by Travis Scott
+     35 Sorry by Justin Bieber
+     35 Never Be Like You by Flume
+     35 Caroline by Aminé
+     35 Gold Digger by Kanye West
+
+top artists
+    939 Drake
+    415 Kanye West
+    385 Kendrick Lamar
+    350 Rihanna
+    332 Eminem
+    296 The Weeknd
+    292 Lil Uzi Vert
+    285 Ed Sheeran
+    265 Future
+    259 Chris Brown
+    251 Justin Bieber
+    242 Lil Wayne
+    234 Beyoncé
+    232 The Chainsmokers
+    226 Twenty One Pilots
+    222 Big Sean
+    221 Post Malone
+    220 J. Cole
+    204 Kenny Chesney
+    203 Maroon 5
+
+numedits histogram
+     97 2
+     90 3
+     73 4
+     66 5
+     58 6
+     41 7
+     39 10
+     39 8
+     32 9
+     29 14
+     26 13
+     24 11
+     24 12
+     24 17
+     17 19
+     15 21
+     14 18
+     14 26
+     14 24
+     13 15
+
+last modified histogram
+     17 2017-10-27
+     15 2017-10-29
+     12 2017-10-30
+     11 2017-10-26
+     11 2017-10-23
+     11 2017-10-28
+      9 2017-10-25
+      9 2017-10-20
+      9 2017-10-24
+      8 2017-10-21
+      8 2017-10-11
+      7 2017-09-27
+      7 2017-09-17
+      7 2017-10-15
+      6 2017-09-25
+      6 2017-10-04
+      6 2017-10-13
+      5 2017-09-26
+      5 2017-09-05
+      5 2017-09-30
+
+playlist length histogram
+     20 17
+     20 18
+     18 24
+     17 35
+     16 16
+     16 10
+     15 14
+     15 26
+     15 19
+     15 22
+     15 23
+     14 41
+     14 55
+     14 28
+     13 12
+     13 33
+     13 44
+     13 29
+     12 50
+     11 46
+
+num followers histogram
+    750 1
+    138 2
+     57 3
+     24 4
+      8 5
+      6 6
+      4 7
+      3 8
+      2 9
+      1 10
+      1 18
+      1 22
+      1 11
+      1 15
+      1 13
+      1 17
+      1 1038
