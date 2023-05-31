@@ -18,5 +18,7 @@ if __name__ == '__main__':
 
     print(music_df.head())
     
+    print(music_df.keys())
+    
 
     
