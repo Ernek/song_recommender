@@ -52,12 +52,13 @@ def get_features(df, N=1):
     features_df['song_popularity'] = np.where(features_df['song_popularity'] == 0, features_df['artist_popularity'], features_df['song_popularity'])
     features_df['index'] = indexes
     features_df['artist_genre'] = features_df['artist_genre'].apply(lambda x: ' '.join([i.replace('-', ' ').replace('_', ' ') for i in x]))
+    features_df['artist_genre'] = features_df['artist_genre'].apply(lambda x: ' '.join(list(set(x.split()))))
     features_df.set_index('index', inplace=True)
     features_df.index.name = None
     features_df.drop(['type', 'id', 'track_href', 'analysis_url'], inplace=True, axis=1)
     # string_field = check_df.track_track_name.str.cat(" " + check_df.artist_genre)
     string_field = features_df.artist_genre
-    string_field = string_field.replace({"r\&b": "rhythm blues"}, regex = True)
+    # string_field = string_field.replace({"r\&b": "rhythm blues"}, regex = True)
     string_field = string_field.replace({"[^A-Za-z ]+": ""}, regex = True)
     features_df['text'] = string_field
     

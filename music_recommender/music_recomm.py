@@ -23,7 +23,8 @@ if __name__ == '__main__':
     #print(music_df.keys())
     fraction = 0.4
     #print(music_df.text[int(len(music_df.text)*fraction):])
-    X_train = vectorize_text(music_df.text[int(len(music_df.text)*fraction):])
+    X_train = vectorize_text(music_df.text[:int(len(music_df.text)*fraction)])
+    # X_train = vectorize_text(music_df.text[:21])
     
     #print(X_train)
     model = kmeans_fit(X_train, 5, 500, 100)
