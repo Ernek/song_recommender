@@ -3,9 +3,10 @@ import numpy as np
 import json
 from math import floor
 from copy import deepcopy
+import os
 
-root_path = !pwd
-root_path = str(root_path[0])
+
+root_path = os.getcwd()
 filepath = f"{root_path}/playlist_data/sampledata/"
 filename = 'mpd.slice.0-999.json'
 fpath_name = f"{filepath}{filename}"
@@ -16,15 +17,16 @@ playlists = pd.json_normalize(data['playlists'])
 
 def get_score(pred_songs, true_songs):
     
-    true_songs = pd.DataFrame(true_songs)
-    pred_songs = pd.DataFrame(pred_songs)
-    
-    artist_score = pred_songs.artist_name.apply(lambda x: x in true_songs.artist_name.values).sum()
-    track_score = pred_songs.track_name.apply(lambda x: x in true_songs.track_name.values).sum()
-    
-    score = artist_score + track_score
+    pred_artists = {track['artist_name'] for track in pred_songs}
+    true_artists = {track['artist_name'] for track in true_songs}
+    pred_tracks = {track['track_name'] for track in pred_songs}
+    true_tracks = {track['track_name'] for track in true_songs}
 
-    return score/(2*len(pred_songs))
+    artist_score = len(pred_artists.intersection(true_artists))
+    track_score = len(pred_tracks.intersection(true_tracks))
+    
+
+    return [artist_score/(len(pred_artists)), track_score/(len(pred_tracks))]
 
 
 def evaluate(suggestions, val_ratio=0.2):
@@ -48,6 +50,11 @@ def evaluate(suggestions, val_ratio=0.2):
     val_songs = playlists.tracks.apply(lambda x: x[max(1,floor(len(x)*(1-val_ratio))):])
     total_score = suggestions
     
-    scores = [get_score(suggestions['tracks'][i], val_songs[i]) for i in suggestions.pid]
+    scores = np.array([get_score(suggestions['tracks'][i], val_songs[i]) for i in suggestions.pid])
+
+    result = {'artist_match_rate':np.mean(scores, axis=0)[0], 'track_match_rate':np.mean(scores,axis=0)[1]}
     
-    return sum(scores)/len(suggestions)
+    return result
+
+
+
