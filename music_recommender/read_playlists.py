@@ -22,6 +22,21 @@ def get_song_dataframe(path):
     data = pd.concat(df_list)
     return data
 
+def get_artist_dataframe(path): 
+    # returns a dataframe of all of the artists in the million playlist data set
+    # The only attributes included are "followers", "name", "uri", "genres", "popularity"
+    # WARNING - Some artists have no genres, in this case the value is an empty list
+    # path - a string containing a path to the folder where the csv files are held.
+    #        for example, on my machine, the folder where I ran this script also contained a folder
+    #        called "song_data" which had the csv files in it. So I called get_song_dataframe('song_data/')
+    #        NOTE - Make sure to include the slash!
+    dfs = [pd.read_csv(path + 'artist.slice.0-99999.csv'), pd.read_csv(path + 'artist.slice.100000-199999.csv'), pd.read_csv(path + 'artist.slice.200000-295859.csv')]
+    df = pd.concat(dfs)
+    del df['Unnamed: 0.1']
+    del df['Unnamed: 0']
+    
+    return df
+
 def read_file(fpath,*playlist_files):
     """
     Read a json file containing playlist information 
