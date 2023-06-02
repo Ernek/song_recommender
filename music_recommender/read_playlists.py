@@ -6,6 +6,22 @@ import spotipy
 import pickle
 
 
+def get_song_dataframe(path):
+    # returns a dataframe of all of the songs in the million playlist data set
+    # path - a string containing a path to the folder where the csv files are held.
+    #        for example, on my machine, the folder where I ran this script also contained a folder
+    #        called "song_data" which had the csv files in it. So I called get_song_dataframe('song_data/')
+    #        NOTE - Make sure to include the slash!
+    file_name_list = ['song.slice.' + str(i) + '-' + str(i + 49999) + '.csv' for i in range(0,2212292, 50000)] 
+    file_name_list = file_name_list + ['song.slice.2250000-2262292.csv']
+                        
+    df_list = []
+    for file_name in file_name_list:
+        df_list.append(pd.read_csv(path + file_name))
+    
+    data = pd.concat(df_list)
+    return data
+
 def read_file(fpath,*playlist_files):
     """
     Read a json file containing playlist information 
