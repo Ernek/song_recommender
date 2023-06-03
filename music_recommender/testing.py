@@ -17,15 +17,25 @@ with open(fpath_name) as data_file:
     
 playlists = pd.json_normalize(data['playlists'])
 
-filename = 'song.slice.0-49999.csv'
+filename = 'data_with_genres.csv'
 fpath_name = f"{filepath}{filename}"
 
-songs_df = pd.read_csv(fpath_name)
-songs_df = songs_df.iloc[:,2:]
+songs_df = pd.read_csv(fpath_name)[:50000]
+
+filepath = f"{root_path}/playlist_data/lyrics/"
+filename = 'sentiments.csv'
+fpath_name = f"{filepath}{filename}"
+
+sentiments = pd.read_csv(fpath_name)
+
+songs_df = pd.merge(songs_df, sentiments, how='left', left_on='track_uri', right_on='track_track_uri')
+songs_df['sentiment'] = songs_df.sentiment.fillna(songs_df.sentiment.mean())
+songs_df.pop('track_track_uri')
+
 
 song_features = ['danceability', 'energy', 'key', 'loudness',
        'speechiness', 'acousticness', 'instrumentalness', 'liveness',
-       'valence', 'tempo']
+       'valence', 'tempo', 'playlist_description_encoded', 'sentiment']
 songs_num = songs_df[song_features]
 
 scaler = MinMaxScaler()
@@ -73,7 +83,7 @@ def evaluate(suggestions, true=None, val_ratio=0.2, from_pid=False):
     else:
         
         n = len(suggestions)
-        scores = np.array([get_score(suggestions[i], true[i]) for i in range(n)])
+        scores = np.array([get_score(suggestions[i], true[i]) for i in range(n) if len(suggestions[i])>0])
     
     result = {'artist_match_rate':np.mean(scores, axis=0)[0], 'track_match_rate':np.mean(scores,axis=0)[1]}
     
@@ -134,15 +144,17 @@ def evaluate_k_means_model(model, features,  playlists, n_suggestions=5, val_rat
 
 
 
-def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2, val_ratio=0.2):
+def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2, num_clusters = 20, val_ratio=0.2):
     
     songs = songs_df[features]
     
     partial_playlist = playlists.tracks.apply(lambda x: x[:max(1,floor(len(x)*(1-0.5)))])
     val_songs = playlists.tracks.apply(lambda x: x[max(1,floor(len(x)*(1-0.5))):])
     
+    columns = songs_df[song_features].columns
+    features = [columns.get_loc(feat) for feat in features]
+    
     # Train the fuzzy model
-    num_clusters = 7
     cntr, u, _, _, _, _, _ = fuzz.cluster.cmeans(songs_num.T, num_clusters, m=1.00001, error=0.000005, maxiter=50000)
     all_songs_membership = fuzz.cluster.cmeans_predict(songs_num.T, cntr, 2, error=0.000005, maxiter=50000)[0]
     
@@ -153,7 +165,9 @@ def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2, va
         playlist = playlists.tracks[i]
         uri_list = [track['track_uri'] for track in playlist]
         
-        playlist = songs[[uri in uri_list for uri in songs_df['uri']]]
+        playlist = songs_num[[uri in uri_list for uri in songs_df['uri']]]
+        playlist = playlist[:,features]
+        
         
         # Predict the cluster
         
@@ -179,7 +193,10 @@ def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2, va
             if np.array_equal(arr[:refinement], target_array):
                 matching_indices.append(index)
         
-        recs.append(songs_df[[i in matching_indices for i in range(len(songs_df))]].sample(n_suggestions).to_dict(orient='records'))
+        recs.append(songs_df[[i in matching_indices for i in range(len(songs_df))]].sample(min(len(matching_indices),n_suggestions)).to_dict(orient='records'))
+        
+        if i%10 ==0:
+            print('finished', i)
     
     recs_s = pd.Series(recs)
 
