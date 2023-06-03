@@ -5,9 +5,10 @@
 if __name__ == '__main__':
     # main()
     import pandas as pd
-    from read_playlists import read_file, get_song_dataframe
+    from read_playlists import read_file, get_song_dataframe, get_artist_dataframe
     from featurization import get_features, merge_track_features_and_playlist
-    from k_means import vectorize_text, kmeans_fit, kmeans_predict, add_prediction
+    from k_means import kmeans_fit, kmeans_predict, add_prediction
+    from tfidf_vectorizer import vectorize_fit, vectorize_transform
     from recommend_util import recommend_util
 
     #### READING FROM Json files ####
@@ -18,15 +19,21 @@ if __name__ == '__main__':
     # print(music_data.head())
 
     #### READING FROM song_data database compiled by Greg Taylor
-    fpath = '/home/ernek/Main/Erdos/song_recommender/song_data/'
-    music_data = get_song_dataframe(fpath)
+    songs_path = '/home/ernek/Main/Erdos/song_recommender/song_data/'
+    music_data = get_song_dataframe(songs_path)
     print(music_data.head())
     print(music_data.columns)
-    
+    artist_path = '/home/ernek/Main/Erdos/song_recommender/artist_data/' 
+    artist_data = get_artist_dataframe(artist_path)
+    print(artist_data.head())
+    print(artist_data.columns)
     # N = 50
     # song_features = get_features(music_data, N)
     # music_df = merge_track_features_and_playlist(music_data, song_features, N)
-
+    song_features = ['danceability', 'energy', 'key', 'loudness',
+       'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness',
+       'valence', 'tempo']
+    
     # print(music_df.head())
     
     # #print(music_df.keys())
