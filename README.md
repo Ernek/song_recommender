@@ -1,2 +1,2 @@
 # song_recommender
-This is a song recommender system employing machine learning. The model is capable of determining similarities between a chosen song (or set of songs) and songs from a music library which enables the automatic generation of music playlists. 
+This is a song recommender system employing k means and fuzzy clustering. We created an application that the user can choose out of 5 songs which song to find recommendations for. The application uses the k means algorithm. We employ both the k means and fuzzy clustering algorithm to cluster songs together. To recommend songs we find which cluster the song is apart of and find alike songs within that cluster. The fuzzy clustering allows a song to be a part of multiple clusters.
