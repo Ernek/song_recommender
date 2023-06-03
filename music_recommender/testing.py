@@ -6,7 +6,7 @@ import json
 from math import floor
 from copy import deepcopy
 import os
-
+import statistics as st
 
 root_path = os.getcwd()[:-5]
 filepath = f"{root_path}/playlist_data/sampledata/"
@@ -22,10 +22,16 @@ fpath_name = f"{filepath}{filename}"
 
 songs_df = pd.read_csv(fpath_name)
 songs_df = songs_df.iloc[:,2:]
-songs_num = songs_df.select_dtypes(include=np.number)
+
+song_features = ['danceability', 'energy', 'key', 'loudness',
+       'speechiness', 'acousticness', 'instrumentalness', 'liveness',
+       'valence', 'tempo']
+songs_num = songs_df[song_features]
 
 scaler = MinMaxScaler()
 songs_num = scaler.fit_transform(songs_num)
+
+
 
 def get_score(pred_songs, true_songs):
     
@@ -73,7 +79,7 @@ def evaluate(suggestions, true=None, val_ratio=0.2, from_pid=False):
     
     return result
 
-def evaluate_k_means_model(features,  playlists, n_suggestions=5):
+def evaluate_k_means_model(model, features,  playlists, n_suggestions=5, val_ratio=0.2):
     
     """
     
@@ -97,6 +103,9 @@ def evaluate_k_means_model(features,  playlists, n_suggestions=5):
     partial_playlist = playlists.tracks.apply(lambda x: x[:max(1,floor(len(x)*(1-0.5)))])
     val_songs = playlists.tracks.apply(lambda x: x[max(1,floor(len(x)*(1-0.5))):])
     
+    columns = songs_df[song_features].columns
+    features = [columns.get_loc(feat) for feat in features]
+    
     recs = []
     
     for i in range(len(playlists)):
@@ -105,7 +114,7 @@ def evaluate_k_means_model(features,  playlists, n_suggestions=5):
         uri_list = [track['track_uri'] for track in playlist]
         
         playlist = songs_num[[uri in uri_list for uri in songs_df['uri']]]
-        playlist = playlist[features]
+        playlist = playlist[:,features]
         
         # Predict the cluster
         clusters = model.predict(playlist)
@@ -113,11 +122,11 @@ def evaluate_k_means_model(features,  playlists, n_suggestions=5):
 
         # Suggest songs from the cluster
         
-        recs.append(songs_df[model.labels_ == cluster].sample(n_suggestions).to_dict(orient='records'))
+        recs.append(songs_df[model.labels_[:50000] == cluster].sample(n_suggestions).to_dict(orient='records'))
     
     recs_s = pd.Series(recs)
 
-    return evaluate(recs_s, val_songs)
+    return evaluate(recs_s, val_songs, val_ratio)
 
 
 
@@ -125,7 +134,7 @@ def evaluate_k_means_model(features,  playlists, n_suggestions=5):
 
 
 
-def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2):
+def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2, val_ratio=0.2):
     
     songs = songs_df[features]
     
@@ -174,4 +183,4 @@ def evaluate_fuzzy_model(features,  playlists, n_suggestions=5, refinement=2):
     
     recs_s = pd.Series(recs)
 
-    return evaluate(recs_s, val_songs)
+    return evaluate(recs_s, val_songs, val_ratio)
